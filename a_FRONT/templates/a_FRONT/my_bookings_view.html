@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <div class="container mx-auto px-4 py-8" x-data="myBookings()" x-cloak>
+    <div class="container mx-auto px-4 py-8" x-data="myBookings()">
         <!-- Page Header -->
         <div class="mb-8">
             <h2 class="text-3xl font-bold text-gray-800 mb-2">My Bookings</h2>
@@ -288,13 +288,13 @@
 
         <!-- Modals -->
         <!-- Rating Modal -->
-        <div x-show="showRatingModal" 
+        <div x-bind:class="{ 'hidden': !showRatingModal }"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
              @click.self="showRatingModal = false"
-             x-cloak>
+             style="display: none;">
             
             <div class="bg-white rounded-xl p-6 m-4 max-w-md w-full">
                 <div class="flex justify-between items-center mb-4">
@@ -304,7 +304,7 @@
                     </button>
                 </div>
 
-                <div x-show="selectedBookingForRating" class="space-y-4" x-cloak>
+                <div x-bind:class="{ 'hidden': !selectedBookingForRating }" class="space-y-4" style="display: none;">
                     <div class="text-center">
                         <h4 class="font-semibold" x-text="selectedBookingForRating?.className"></h4>
                         <p class="text-gray-600" x-text="selectedBookingForRating?.instructor"></p>
