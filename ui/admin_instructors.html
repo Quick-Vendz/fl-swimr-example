@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Instructors - AquaLife Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Admin Header -->
+    <header class="bg-gray-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-cogs text-2xl text-red-400"></i>
+                    <h1 class="text-xl font-bold">AquaLife Admin Portal</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-300 hover:text-white">
+                        <i class="fas fa-external-link-alt mr-1"></i>View Website
+                    </a>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center space-x-2 bg-gray-800 px-3 py-2 rounded-lg hover:bg-gray-700">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Admin User</span>
+                            <i class="fas fa-chevron-down text-sm"></i>
+                        </button>
+                        <div x-show="open" @click.away="open = false" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 transform scale-95"
+                             x-transition:enter-end="opacity-100 transform scale-100"
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Admin Settings</a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">System Reports</a>
+                            <div class="border-t border-gray-100"></div>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="p-4">
+                <div class="space-y-2">
+                    <a href="admin_dashboard.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="admin_instructors.html" class="flex items-center space-x-3 p-3 rounded-lg bg-blue-100 text-blue-700 font-medium">
+                        <i class="fas fa-users"></i>
+                        <span>Manage Instructors</span>
+                    </a>
+                    <a href="admin_classes.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-swimming-pool"></i>
+                        <span>Manage Classes</span>
+                    </a>
+                    <a href="admin_bookings.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>View Bookings</span>
+                    </a>
+                    <a href="admin_students.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Students</span>
+                    </a>
+                    <div class="border-t border-gray-200 my-3"></div>
+                    <a href="admin_reports.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                    <a href="admin_settings.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6" x-data="manageInstructors()">
+            <!-- Page Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Manage Instructors</h2>
+                    <p class="text-gray-600">Add, edit, and manage swimming instructors</p>
+                </div>
+                <button @click="showAddModal = true" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Add New Instructor
+                </button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <div class="flex flex-wrap gap-4 items-center">
+                    <div class="flex-1 max-w-md">
+                        <div class="relative">
+                            <input type="text" x-model="searchQuery" @input="filterInstructors()" 
+                                   placeholder="Search instructors..."
+                                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <label class="text-gray-700 font-medium">Status:</label>
+                        <select x-model="selectedStatus" @change="filterInstructors()" 
+                                class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="all">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <label class="text-gray-700 font-medium">Specialty:</label>
+                        <select x-model="selectedSpecialty" @change="filterInstructors()" 
+                                class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="all">All Specialties</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="kids">Kids</option>
+                            <option value="competitive">Competitive</option>
+                            <option value="rehabilitation">Rehabilitation</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructors Table -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instructor</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialties</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <template x-for="instructor in filteredInstructors" :key="instructor.id">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                                <i class="fas fa-user text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900" x-text="instructor.name"></div>
+                                                <div class="text-sm text-gray-500" x-text="instructor.email"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-wrap gap-1">
+                                            <template x-for="specialty in instructor.specialties" :key="specialty">
+                                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full" x-text="specialty"></span>
+                                            </template>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <span x-text="instructor.experience + ' years'"></span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <span class="text-sm font-medium text-gray-900" x-text="instructor.rating"></span>
+                                            <div class="flex text-yellow-400 ml-1">
+                                                <template x-for="star in 5" :key="star">
+                                                    <i :class="star <= instructor.rating ? 'fas fa-star' : 'far fa-star'" class="text-xs"></i>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span 
+                                            :class="instructor.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                                            class="px-2 py-1 text-xs font-medium rounded-full"
+                                            x-text="instructor.status"
+                                        ></span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                        <button @click="editInstructor(instructor)" class="text-blue-600 hover:text-blue-900">
+                                            <i class="fas fa-edit mr-1"></i>Edit
+                                        </button>
+                                        <button @click="viewSchedule(instructor)" class="text-green-600 hover:text-green-900">
+                                            <i class="fas fa-calendar mr-1"></i>Schedule
+                                        </button>
+                                        <button @click="toggleStatus(instructor)" 
+                                                :class="instructor.status === 'active' ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'">
+                                            <i :class="instructor.status === 'active' ? 'fas fa-pause' : 'fas fa-play'" class="mr-1"></i>
+                                            <span x-text="instructor.status === 'active' ? 'Deactivate' : 'Activate'"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Add/Edit Instructor Modal -->
+            <div x-show="showAddModal || showEditModal" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                 @click.self="closeModals()">
+                
+                <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100">
+                    
+                    <div class="p-6">
+                        <!-- Modal Header -->
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold text-gray-800">
+                                <span x-show="showAddModal">Add New Instructor</span>
+                                <span x-show="showEditModal">Edit Instructor</span>
+                            </h3>
+                            <button @click="closeModals()" class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+
+                        <!-- Instructor Form -->
+                        <form @submit.prevent="saveInstructor()" class="space-y-6">
+                            <!-- Basic Information -->
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                                    <input type="text" x-model="instructorForm.name" required
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                                    <input type="email" x-model="instructorForm.email" required
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                                    <input type="tel" x-model="instructorForm.phone" required
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Years of Experience *</label>
+                                    <input type="number" x-model="instructorForm.experience" required min="0"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+
+                            <!-- Professional Information -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
+                                <input type="text" x-model="instructorForm.title" required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Biography</label>
+                                <textarea x-model="instructorForm.bio" rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Brief description of instructor's background..."></textarea>
+                            </div>
+
+                            <!-- Specialties -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Specialties *</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <template x-for="specialty in availableSpecialties" :key="specialty">
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" x-model="instructorForm.specialties" :value="specialty"
+                                                   class="text-blue-600 focus:ring-blue-500">
+                                            <span class="text-sm" x-text="specialty"></span>
+                                        </label>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Certifications -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Certifications (comma separated)</label>
+                                <input type="text" x-model="instructorForm.certificationsText"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="e.g., WSI, Lifeguard, CPR/AED">
+                            </div>
+
+                            <!-- Languages -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Languages (comma separated)</label>
+                                <input type="text" x-model="instructorForm.languagesText"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="e.g., English, Spanish, French">
+                            </div>
+
+                            <!-- Availability -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Availability</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <template x-for="time in availableTimes" :key="time">
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" x-model="instructorForm.availability" :value="time"
+                                                   class="text-blue-600 focus:ring-blue-500">
+                                            <span class="text-sm" x-text="time"></span>
+                                        </label>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select x-model="instructorForm.status"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="flex space-x-3 pt-6 border-t">
+                                <button type="button" @click="closeModals()"
+                                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                                    Cancel
+                                </button>
+                                <button type="submit"
+                                        class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    <span x-show="showAddModal">Add Instructor</span>
+                                    <span x-show="showEditModal">Update Instructor</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div x-show="showSuccessMessage" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-check-circle"></i>
+                    <span x-text="successMessage"></span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function manageInstructors() {
+            return {
+                searchQuery: '',
+                selectedStatus: 'all',
+                selectedSpecialty: 'all',
+                showAddModal: false,
+                showEditModal: false,
+                showSuccessMessage: false,
+                successMessage: '',
+                editingInstructor: null,
+
+                instructorForm: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    title: '',
+                    bio: '',
+                    experience: 0,
+                    specialties: [],
+                    certificationsText: '',
+                    languagesText: '',
+                    availability: [],
+                    status: 'active'
+                },
+
+                availableSpecialties: [
+                    'Beginner Instruction',
+                    'Kids Classes',
+                    'Competitive Training',
+                    'Rehabilitation',
+                    'Water Safety',
+                    'Open Water Swimming',
+                    'Triathlon Training'
+                ],
+
+                availableTimes: [
+                    'Morning',
+                    'Afternoon',
+                    'Evening',
+                    'Weekend'
+                ],
+
+                allInstructors: [
+                    {
+                        id: 1,
+                        name: 'Sarah Johnson',
+                        email: 'sarah@aqualife.com',
+                        phone: '(555) 123-4567',
+                        title: 'Lead Swimming Instructor',
+                        bio: 'Sarah has been teaching swimming for over 8 years...',
+                        experience: 8,
+                        rating: 4.9,
+                        status: 'active',
+                        specialties: ['Beginner Instruction', 'Water Safety'],
+                        certifications: ['WSI', 'Lifeguard', 'CPR/AED'],
+                        languages: ['English', 'Spanish'],
+                        availability: ['Morning', 'Afternoon']
+                    },
+                    {
+                        id: 2,
+                        name: 'Mike Chen',
+                        email: 'mike@aqualife.com',
+                        phone: '(555) 234-5678',
+                        title: 'Competitive Swimming Coach',
+                        bio: 'Former competitive swimmer turned coach...',
+                        experience: 12,
+                        rating: 4.8,
+                        status: 'active',
+                        specialties: ['Competitive Training', 'Advanced Swimming'],
+                        certifications: ['ASCA', 'USA Swimming', 'Lifeguard'],
+                        languages: ['English', 'Mandarin'],
+                        availability: ['Afternoon', 'Evening']
+                    },
+                    {
+                        id: 3,
+                        name: 'Emma Rodriguez',
+                        email: 'emma@aqualife.com',
+                        phone: '(555) 345-6789',
+                        title: 'Children\'s Swimming Specialist',
+                        bio: 'Emma has a special gift for working with children...',
+                        experience: 6,
+                        rating: 4.9,
+                        status: 'active',
+                        specialties: ['Kids Classes', 'Water Safety'],
+                        certifications: ['WSI', 'Youth Development', 'Lifeguard'],
+                        languages: ['English', 'Spanish', 'Portuguese'],
+                        availability: ['Morning', 'Afternoon', 'Weekend']
+                    },
+                    {
+                        id: 4,
+                        name: 'Dr. Amanda Foster',
+                        email: 'amanda@aqualife.com',
+                        phone: '(555) 456-7890',
+                        title: 'Aquatic Therapy Specialist',
+                        bio: 'Dr. Foster combines medical background with swimming...',
+                        experience: 10,
+                        rating: 4.7,
+                        status: 'inactive',
+                        specialties: ['Rehabilitation', 'Adaptive Swimming'],
+                        certifications: ['ATC', 'DPT', 'ATRI'],
+                        languages: ['English'],
+                        availability: ['Morning', 'Afternoon']
+                    }
+                ],
+
+                get filteredInstructors() {
+                    let filtered = this.allInstructors;
+
+                    if (this.selectedStatus !== 'all') {
+                        filtered = filtered.filter(instructor => instructor.status === this.selectedStatus);
+                    }
+
+                    if (this.selectedSpecialty !== 'all') {
+                        filtered = filtered.filter(instructor => 
+                            instructor.specialties.some(specialty => 
+                                specialty.toLowerCase().includes(this.selectedSpecialty)
+                            )
+                        );
+                    }
+
+                    if (this.searchQuery) {
+                        const query = this.searchQuery.toLowerCase();
+                        filtered = filtered.filter(instructor => 
+                            instructor.name.toLowerCase().includes(query) ||
+                            instructor.email.toLowerCase().includes(query) ||
+                            instructor.title.toLowerCase().includes(query)
+                        );
+                    }
+
+                    return filtered;
+                },
+
+                init() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.get('action') === 'add') {
+                        this.showAddModal = true;
+                    }
+                },
+
+                filterInstructors() {
+                    // Computed property handles filtering
+                },
+
+                editInstructor(instructor) {
+                    this.editingInstructor = instructor;
+                    this.instructorForm = {
+                        name: instructor.name,
+                        email: instructor.email,
+                        phone: instructor.phone,
+                        title: instructor.title,
+                        bio: instructor.bio,
+                        experience: instructor.experience,
+                        specialties: [...instructor.specialties],
+                        certificationsText: instructor.certifications.join(', '),
+                        languagesText: instructor.languages.join(', '),
+                        availability: [...instructor.availability],
+                        status: instructor.status
+                    };
+                    this.showEditModal = true;
+                },
+
+                toggleStatus(instructor) {
+                    instructor.status = instructor.status === 'active' ? 'inactive' : 'active';
+                    this.showSuccess(`Instructor ${instructor.status === 'active' ? 'activated' : 'deactivated'} successfully!`);
+                },
+
+                viewSchedule(instructor) {
+                    alert(`Viewing schedule for ${instructor.name}`);
+                    // In real app, this would redirect to schedule management
+                },
+
+                saveInstructor() {
+                    if (this.showEditModal) {
+                        // Update existing instructor
+                        Object.assign(this.editingInstructor, {
+                            name: this.instructorForm.name,
+                            email: this.instructorForm.email,
+                            phone: this.instructorForm.phone,
+                            title: this.instructorForm.title,
+                            bio: this.instructorForm.bio,
+                            experience: parseInt(this.instructorForm.experience),
+                            specialties: [...this.instructorForm.specialties],
+                            certifications: this.instructorForm.certificationsText.split(',').map(s => s.trim()),
+                            languages: this.instructorForm.languagesText.split(',').map(s => s.trim()),
+                            availability: [...this.instructorForm.availability],
+                            status: this.instructorForm.status
+                        });
+                        this.showSuccess('Instructor updated successfully!');
+                    } else {
+                        // Add new instructor
+                        const newInstructor = {
+                            id: this.allInstructors.length + 1,
+                            name: this.instructorForm.name,
+                            email: this.instructorForm.email,
+                            phone: this.instructorForm.phone,
+                            title: this.instructorForm.title,
+                            bio: this.instructorForm.bio,
+                            experience: parseInt(this.instructorForm.experience),
+                            rating: 4.5, // Default rating
+                            specialties: [...this.instructorForm.specialties],
+                            certifications: this.instructorForm.certificationsText.split(',').map(s => s.trim()),
+                            languages: this.instructorForm.languagesText.split(',').map(s => s.trim()),
+                            availability: [...this.instructorForm.availability],
+                            status: this.instructorForm.status
+                        };
+                        this.allInstructors.push(newInstructor);
+                        this.showSuccess('Instructor added successfully!');
+                    }
+                    
+                    this.closeModals();
+                },
+
+                closeModals() {
+                    this.showAddModal = false;
+                    this.showEditModal = false;
+                    this.editingInstructor = null;
+                    this.resetForm();
+                },
+
+                resetForm() {
+                    this.instructorForm = {
+                        name: '',
+                        email: '',
+                        phone: '',
+                        title: '',
+                        bio: '',
+                        experience: 0,
+                        specialties: [],
+                        certificationsText: '',
+                        languagesText: '',
+                        availability: [],
+                        status: 'active'
+                    };
+                },
+
+                showSuccess(message) {
+                    this.successMessage = message;
+                    this.showSuccessMessage = true;
+                    setTimeout(() => {
+                        this.showSuccessMessage = false;
+                    }, 3000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

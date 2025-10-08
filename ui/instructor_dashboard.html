@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Portal - AquaLife Swimming School</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <!-- Instructor Header -->
+    <header class="bg-blue-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-chalkboard-teacher text-2xl text-blue-300"></i>
+                    <h1 class="text-xl font-bold">AquaLife Instructor Portal</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-blue-300 hover:text-white">
+                        <i class="fas fa-external-link-alt mr-1"></i>View Website
+                    </a>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center space-x-2 bg-blue-800 px-3 py-2 rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-user"></i>
+                            <span>Sarah Johnson</span>
+                            <i class="fas fa-chevron-down text-sm"></i>
+                        </button>
+                        <div x-show="open" @click.away="open = false" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 transform scale-95"
+                             x-transition:enter-end="opacity-100 transform scale-100"
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
+                            <div class="border-t border-gray-100"></div>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="p-4">
+                <div class="space-y-2">
+                    <a href="instructor_dashboard.html" class="flex items-center space-x-3 p-3 rounded-lg bg-blue-100 text-blue-700 font-medium">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="instructor_classes.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-swimming-pool"></i>
+                        <span>My Classes</span>
+                    </a>
+                    <a href="instructor_schedule.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Schedule</span>
+                    </a>
+                    <a href="instructor_students.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-users"></i>
+                        <span>My Students</span>
+                    </a>
+                    <a href="instructor_progress.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Student Progress</span>
+                    </a>
+                    <div class="border-t border-gray-200 my-3"></div>
+                    <a href="instructor_profile.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6" x-data="instructorDashboard()">
+            <!-- Page Header -->
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Welcome back, Sarah!</h2>
+                <p class="text-gray-600">Here's an overview of your classes and students</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Today's Classes</p>
+                            <p class="text-3xl font-bold text-gray-800" x-text="stats.todayClasses"></p>
+                            <p class="text-blue-600 text-sm">Next at 9:00 AM</p>
+                        </div>
+                        <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center">
+                            <i class="fas fa-swimming-pool text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Active Students</p>
+                            <p class="text-3xl font-bold text-gray-800" x-text="stats.activeStudents"></p>
+                            <p class="text-green-600 text-sm">+3 this week</p>
+                        </div>
+                        <div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center">
+                            <i class="fas fa-users text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">This Week's Hours</p>
+                            <p class="text-3xl font-bold text-gray-800" x-text="stats.weeklyHours"></p>
+                            <p class="text-yellow-600 text-sm">18 hours scheduled</p>
+                        </div>
+                        <div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Average Rating</p>
+                            <p class="text-3xl font-bold text-gray-800" x-text="stats.rating"></p>
+                            <div class="flex text-yellow-400">
+                                <template x-for="star in 5" :key="star">
+                                    <i class="fas fa-star text-sm"></i>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center">
+                            <i class="fas fa-star text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Schedule & Quick Actions -->
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                <!-- Today's Schedule -->
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Today's Schedule</h3>
+                        <a href="instructor_schedule.html" class="text-blue-600 hover:text-blue-800 text-sm">View full schedule →</a>
+                    </div>
+                    <div class="space-y-3">
+                        <template x-for="class_ in todaySchedule" :key="class_.id">
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                                <div class="flex items-center space-x-3">
+                                    <div 
+                                        :class="class_.statusColor"
+                                        class="w-3 h-3 rounded-full"
+                                    ></div>
+                                    <div>
+                                        <p class="font-medium text-gray-800" x-text="class_.time"></p>
+                                        <p class="text-sm text-gray-600" x-text="class_.name + ' - ' + class_.students + ' students'"></p>
+                                        <p class="text-xs text-gray-500" x-text="class_.location"></p>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button @click="viewClassDetails(class_)" class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button @click="editClass(class_)" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <button @click="showAddClassModal = true" class="w-full flex items-center space-x-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                            <i class="fas fa-plus text-blue-600"></i>
+                            <span class="text-blue-700 font-medium">Add New Class</span>
+                        </button>
+                        
+                        <button @click="showUpdateAvailabilityModal = true" class="w-full flex items-center space-x-3 p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                            <i class="fas fa-calendar-plus text-green-600"></i>
+                            <span class="text-green-700 font-medium">Update Availability</span>
+                        </button>
+                        
+                        <a href="instructor_students.html" class="w-full flex items-center space-x-3 p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                            <i class="fas fa-clipboard-list text-yellow-600"></i>
+                            <span class="text-yellow-700 font-medium">Take Attendance</span>
+                        </a>
+                        
+                        <a href="instructor_progress.html" class="w-full flex items-center space-x-3 p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                            <i class="fas fa-chart-line text-purple-600"></i>
+                            <span class="text-purple-700 font-medium">Update Progress</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Students & Upcoming Classes -->
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Recent Students -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Students</h3>
+                    <div class="space-y-3">
+                        <template x-for="student in recentStudents" :key="student.id">
+                            <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800" x-text="student.name"></p>
+                                        <p class="text-sm text-gray-600" x-text="student.class + ' - ' + student.level"></p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm text-gray-600" x-text="student.lastClass"></p>
+                                    <div class="flex text-yellow-400">
+                                        <template x-for="star in student.progress" :key="star">
+                                            <i class="fas fa-star text-xs"></i>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="mt-4">
+                        <a href="instructor_students.html" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View all students →</a>
+                    </div>
+                </div>
+
+                <!-- Upcoming Classes This Week -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">This Week's Classes</h3>
+                    <div class="space-y-3">
+                        <template x-for="class_ in upcomingClasses" :key="class_.id">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-gray-800" x-text="class_.day + ' - ' + class_.time"></p>
+                                    <p class="text-sm text-gray-600" x-text="class_.name"></p>
+                                    <p class="text-xs text-gray-500" x-text="class_.enrolled + '/' + class_.capacity + ' students'"></p>
+                                </div>
+                                <div class="text-right">
+                                    <span 
+                                        :class="class_.status === 'available' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
+                                        class="px-2 py-1 text-xs font-medium rounded-full"
+                                        x-text="class_.status === 'available' ? 'Available' : 'Full'"
+                                    ></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="mt-4">
+                        <a href="instructor_classes.html" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Manage all classes →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Class Modal -->
+            <div x-show="showAddClassModal" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                 @click.self="showAddClassModal = false">
+                
+                <div class="bg-white rounded-xl max-w-lg w-full"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100">
+                    
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-gray-800">Add New Class</h3>
+                            <button @click="showAddClassModal = false" class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+
+                        <form @submit.prevent="addClass()" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Class Type</label>
+                                <select x-model="newClass.type" required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select class type</option>
+                                    <option value="beginner">Adult Beginner</option>
+                                    <option value="kids">Kids Swimming</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                    <option value="private">Private Lesson</option>
+                                </select>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Day</label>
+                                    <select x-model="newClass.day" required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select day</option>
+                                        <option value="monday">Monday</option>
+                                        <option value="tuesday">Tuesday</option>
+                                        <option value="wednesday">Wednesday</option>
+                                        <option value="thursday">Thursday</option>
+                                        <option value="friday">Friday</option>
+                                        <option value="saturday">Saturday</option>
+                                        <option value="sunday">Sunday</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                                    <input type="time" x-model="newClass.time" required
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+                                    <input type="number" x-model="newClass.duration" required min="30" max="120"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Max Capacity</label>
+                                    <input type="number" x-model="newClass.capacity" required min="1" max="10"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Price per Session ($)</label>
+                                <input type="number" x-model="newClass.price" required min="20" max="200"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Pool/Location</label>
+                                <select x-model="newClass.location" required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select pool</option>
+                                    <option value="Pool A">Pool A</option>
+                                    <option value="Pool B">Pool B</option>
+                                    <option value="Pool C">Pool C</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Description (optional)</label>
+                                <textarea x-model="newClass.description" rows="2"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Brief description of the class..."></textarea>
+                            </div>
+
+                            <div class="flex space-x-3 pt-4">
+                                <button type="button" @click="showAddClassModal = false"
+                                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                                    Cancel
+                                </button>
+                                <button type="submit"
+                                        class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    Add Class
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div x-show="showSuccessMessage" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-check-circle"></i>
+                    <span x-text="successMessage"></span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function instructorDashboard() {
+            return {
+                showAddClassModal: false,
+                showUpdateAvailabilityModal: false,
+                showSuccessMessage: false,
+                successMessage: '',
+
+                stats: {
+                    todayClasses: 3,
+                    activeStudents: 28,
+                    weeklyHours: 15,
+                    rating: 4.9
+                },
+
+                newClass: {
+                    type: '',
+                    day: '',
+                    time: '',
+                    duration: 60,
+                    capacity: 4,
+                    price: 45,
+                    location: '',
+                    description: ''
+                },
+
+                todaySchedule: [
+                    {
+                        id: 1,
+                        time: '9:00 AM - 10:00 AM',
+                        name: 'Adult Beginner',
+                        students: 4,
+                        location: 'Pool A',
+                        statusColor: 'bg-green-500'
+                    },
+                    {
+                        id: 2,
+                        time: '2:00 PM - 3:15 PM',
+                        name: 'Intermediate Stroke',
+                        students: 3,
+                        location: 'Pool B',
+                        statusColor: 'bg-blue-500'
+                    },
+                    {
+                        id: 3,
+                        time: '6:00 PM - 7:00 PM',
+                        name: 'Private Lesson',
+                        students: 1,
+                        location: 'Pool C',
+                        statusColor: 'bg-purple-500'
+                    }
+                ],
+
+                recentStudents: [
+                    {
+                        id: 1,
+                        name: 'John Smith',
+                        class: 'Adult Beginner',
+                        level: 'Beginner',
+                        lastClass: 'Yesterday',
+                        progress: 3
+                    },
+                    {
+                        id: 2,
+                        name: 'Lisa Johnson',
+                        class: 'Intermediate',
+                        level: 'Intermediate',
+                        lastClass: '2 days ago',
+                        progress: 4
+                    },
+                    {
+                        id: 3,
+                        name: 'Mike Wilson',
+                        class: 'Private Lesson',
+                        level: 'Advanced',
+                        lastClass: '3 days ago',
+                        progress: 5
+                    }
+                ],
+
+                upcomingClasses: [
+                    {
+                        id: 1,
+                        day: 'Tomorrow',
+                        time: '9:00 AM',
+                        name: 'Adult Beginner',
+                        enrolled: 4,
+                        capacity: 4,
+                        status: 'full'
+                    },
+                    {
+                        id: 2,
+                        day: 'Thursday',
+                        time: '2:00 PM',
+                        name: 'Intermediate Stroke',
+                        enrolled: 2,
+                        capacity: 5,
+                        status: 'available'
+                    },
+                    {
+                        id: 3,
+                        day: 'Friday',
+                        time: '6:00 PM',
+                        name: 'Private Lesson',
+                        enrolled: 1,
+                        capacity: 1,
+                        status: 'full'
+                    },
+                    {
+                        id: 4,
+                        day: 'Saturday',
+                        time: '10:00 AM',
+                        name: 'Kids Swimming',
+                        enrolled: 3,
+                        capacity: 6,
+                        status: 'available'
+                    }
+                ],
+
+                viewClassDetails(class_) {
+                    alert(`Viewing details for ${class_.name} at ${class_.time}`);
+                },
+
+                editClass(class_) {
+                    alert(`Editing ${class_.name} class`);
+                },
+
+                addClass() {
+                    // In real app, this would make an API call
+                    console.log('Adding new class:', this.newClass);
+                    
+                    this.showAddClassModal = false;
+                    this.showSuccess('Class added successfully! Students can now book this class.');
+                    
+                    // Reset form
+                    this.newClass = {
+                        type: '',
+                        day: '',
+                        time: '',
+                        duration: 60,
+                        capacity: 4,
+                        price: 45,
+                        location: '',
+                        description: ''
+                    };
+                },
+
+                showSuccess(message) {
+                    this.successMessage = message;
+                    this.showSuccessMessage = true;
+                    setTimeout(() => {
+                        this.showSuccessMessage = false;
+                    }, 4000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

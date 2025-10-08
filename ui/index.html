@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaLife Swimming School - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-blue-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-swimmer text-3xl"></i>
+                    <h1 class="text-2xl font-bold">AquaLife Swimming School</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-blue-200 border-b-2 border-blue-200">Home</a>
+                    <a href="classes.html" class="hover:text-blue-200">Classes</a>
+                    <a href="instructors.html" class="hover:text-blue-200">Instructors</a>
+                    <a href="my_bookings.html" class="hover:text-blue-200">My Bookings</a>
+                    <a href="#" class="bg-blue-700 px-4 py-2 rounded-lg hover:bg-blue-600">Login</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-5xl font-bold mb-6">Learn to Swim with Confidence</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Professional swimming lessons for all ages and skill levels. From your first splash to competitive techniques.</p>
+            <a href="classes.html" class="bg-white text-blue-800 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-50 transition-colors inline-flex items-center space-x-2">
+                <span>Browse Classes</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">Why Choose AquaLife?</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-certificate text-3xl text-blue-600"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2">Certified Instructors</h4>
+                    <p class="text-gray-600">All our instructors are certified professionals with years of experience in swimming education.</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar-check text-3xl text-blue-600"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2">Flexible Scheduling</h4>
+                    <p class="text-gray-600">Book lessons that fit your schedule with our easy online booking system.</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-3xl text-blue-600"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2">Small Class Sizes</h4>
+                    <p class="text-gray-600">Maximum attention with small class sizes ensuring faster progress and safety.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Class Preview Section -->
+    <section class="bg-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">Our Swimming Programs</h3>
+                <p class="text-gray-600 max-w-2xl mx-auto">From beginner basics to advanced competitive training, we have programs designed for every swimmer.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Kids Classes -->
+                <div class="bg-gradient-to-br from-yellow-100 to-orange-100 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+                    <div class="bg-yellow-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-child text-2xl text-yellow-700"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">Kids Swimming</h4>
+                    <p class="text-sm text-gray-600 mb-4">Ages 5-12, fun and safe learning environment</p>
+                    <p class="text-xl font-bold text-gray-800 mb-4">From $35</p>
+                    <a href="classes.html#kids" class="text-yellow-700 hover:text-yellow-800 font-medium">Learn More →</a>
+                </div>
+
+                <!-- Beginner Classes -->
+                <div class="bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+                    <div class="bg-green-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-swimming-pool text-2xl text-green-700"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">Beginner Adult</h4>
+                    <p class="text-sm text-gray-600 mb-4">Never too late to start swimming</p>
+                    <p class="text-xl font-bold text-gray-800 mb-4">From $45</p>
+                    <a href="classes.html#beginner" class="text-green-700 hover:text-green-800 font-medium">Learn More →</a>
+                </div>
+
+                <!-- Intermediate Classes -->
+                <div class="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+                    <div class="bg-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-swimmer text-2xl text-blue-700"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">Intermediate</h4>
+                    <p class="text-sm text-gray-600 mb-4">Improve technique and endurance</p>
+                    <p class="text-xl font-bold text-gray-800 mb-4">From $55</p>
+                    <a href="classes.html#intermediate" class="text-blue-700 hover:text-blue-800 font-medium">Learn More →</a>
+                </div>
+
+                <!-- Advanced Classes -->
+                <div class="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+                    <div class="bg-purple-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-trophy text-2xl text-purple-700"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">Advanced</h4>
+                    <p class="text-sm text-gray-600 mb-4">Competitive training and mastery</p>
+                    <p class="text-xl font-bold text-gray-800 mb-4">From $65</p>
+                    <a href="classes.html#advanced" class="text-purple-700 hover:text-purple-800 font-medium">Learn More →</a>
+                </div>
+            </div>
+
+            <div class="text-center mt-8">
+                <a href="classes.html" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center space-x-2">
+                    <span>View All Classes</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="bg-blue-50 py-16">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">What Our Students Say</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold">Sarah M.</h5>
+                            <p class="text-sm text-gray-600">Beginner Adult</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"I was terrified of water before joining AquaLife. Now I can swim confidently! The instructors are patient and encouraging."</p>
+                    <div class="flex text-yellow-400 mt-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold">Mike R.</h5>
+                            <p class="text-sm text-gray-600">Father of 2</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"Both my kids learned to swim here. The kids' program is fantastic - they had so much fun while learning essential water safety skills."</p>
+                    <div class="flex text-yellow-400 mt-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold">Emma L.</h5>
+                            <p class="text-sm text-gray-600">Competitive Swimmer</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"The advanced training here helped me improve my technique significantly. I've shaved seconds off my personal best!"</p>
+                    <div class="flex text-yellow-400 mt-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-swimmer text-2xl"></i>
+                        <h4 class="text-xl font-bold">AquaLife</h4>
+                    </div>
+                    <p class="text-blue-200">Professional swimming instruction for all ages and skill levels.</p>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Quick Links</h5>
+                    <ul class="space-y-2 text-blue-200">
+                        <li><a href="classes.html" class="hover:text-white">Classes</a></li>
+                        <li><a href="#" class="hover:text-white">Instructors</a></li>
+                        <li><a href="#" class="hover:text-white">Pricing</a></li>
+                        <li><a href="#" class="hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Contact Info</h5>
+                    <ul class="space-y-2 text-blue-200">
+                        <li><i class="fas fa-phone mr-2"></i>(555) 123-4567</li>
+                        <li><i class="fas fa-envelope mr-2"></i>info@aqualife.com</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>123 Pool St, City</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Follow Us</h5>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-twitter text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
+                <p>&copy; 2025 AquaLife Swimming School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

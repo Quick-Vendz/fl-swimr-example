@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Schedule - AquaLife Swimming School</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-blue-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-swimmer text-3xl"></i>
+                    <h1 class="text-2xl font-bold">AquaLife Swimming School</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-blue-200">Home</a>
+                    <a href="classes.html" class="hover:text-blue-200">Classes</a>
+                    <a href="instructors.html" class="hover:text-blue-200">Instructors</a>
+                    <a href="my_bookings.html" class="hover:text-blue-200">My Bookings</a>
+                    <a href="#" class="bg-blue-700 px-4 py-2 rounded-lg hover:bg-blue-600">Login</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8" x-data="weeklySchedule()">
+        <!-- Breadcrumb -->
+        <nav class="mb-6">
+            <ol class="flex items-center space-x-2 text-sm">
+                <li><a href="index.html" class="text-blue-600 hover:text-blue-800">Home</a></li>
+                <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+                <li><a href="classes.html" class="text-blue-600 hover:text-blue-800">Classes</a></li>
+                <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+                <li class="text-gray-600" x-text="selectedClass.name"></li>
+            </ol>
+        </nav>
+
+        <!-- Class Header -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                    <div 
+                        :class="selectedClass.colorClass"
+                        class="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl"
+                    >
+                        <i :class="selectedClass.icon"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800" x-text="selectedClass.name"></h2>
+                        <p class="text-gray-600" x-text="selectedClass.description"></p>
+                        <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                            <span><i class="fas fa-clock mr-1"></i><span x-text="selectedClass.duration"></span></span>
+                            <span><i class="fas fa-users mr-1"></i>Max <span x-text="selectedClass.maxCapacity"></span></span>
+                            <span><i class="fas fa-dollar-sign mr-1"></i>$<span x-text="selectedClass.price"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <a href="classes.html" class="text-blue-600 hover:text-blue-800 text-sm">
+                        <i class="fas fa-arrow-left mr-1"></i>Back to Classes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Week Navigation -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Weekly Schedule</h3>
+                <div class="flex items-center space-x-4">
+                    <button 
+                        @click="changeWeek(-1)"
+                        class="p-2 hover:bg-gray-100 rounded-lg"
+                    >
+                        <i class="fas fa-chevron-left text-gray-600"></i>
+                    </button>
+                    <span class="text-lg font-medium text-gray-700" x-text="currentWeekDisplay"></span>
+                    <button 
+                        @click="changeWeek(1)"
+                        class="p-2 hover:bg-gray-100 rounded-lg"
+                    >
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Weekly Calendar -->
+            <div class="grid grid-cols-7 gap-2">
+                <!-- Day Headers -->
+                <template x-for="day in dayHeaders" :key="day">
+                    <div class="text-center py-3 text-sm font-medium text-gray-500 border-b" x-text="day"></div>
+                </template>
+
+                <!-- Calendar Days -->
+                <template x-for="day in weekDays" :key="day.date">
+                    <div 
+                        :class="[
+                            'min-h-32 border border-gray-200 p-2',
+                            day.isToday ? 'bg-blue-50 border-blue-300' : 'bg-white',
+                            day.isPast ? 'bg-gray-50' : ''
+                        ]"
+                        class="rounded-lg"
+                    >
+                        <div class="text-center mb-2">
+                            <span 
+                                :class="day.isToday ? 'bg-blue-500 text-white' : 'text-gray-700'"
+                                class="inline-block w-8 h-8 rounded-full leading-8 text-sm font-medium"
+                                x-text="day.day"
+                            ></span>
+                        </div>
+                        
+                        <!-- Time Slots for this day -->
+                        <div class="space-y-1">
+                            <template x-for="slot in day.timeSlots" :key="slot.id">
+                                <div 
+                                    @click="selectTimeSlot(slot)"
+                                    :class="[
+                                        'text-xs p-2 rounded cursor-pointer transition-colors',
+                                        slot.available && !day.isPast ? 'bg-green-100 hover:bg-green-200 text-green-800' : '',
+                                        !slot.available ? 'bg-red-100 text-red-800 cursor-not-allowed' : '',
+                                        day.isPast ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : '',
+                                        slot.selected ? 'ring-2 ring-blue-500' : ''
+                                    ]"
+                                >
+                                    <div class="font-medium" x-text="slot.time"></div>
+                                    <div class="text-xs" x-text="slot.instructor"></div>
+                                    <div class="text-xs">
+                                        <span x-show="slot.available && !day.isPast" x-text="slot.spotsLeft + ' spots'"></span>
+                                        <span x-show="!slot.available" class="text-red-600">Full</span>
+                                        <span x-show="day.isPast" class="text-gray-500">Past</span>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Selected Time Slot & Booking -->
+        <div x-show="selectedTimeSlot" class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Selected Time Slot</h3>
+            
+            <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-semibold text-blue-900 mb-2" x-text="selectedClass.name"></h4>
+                        <div class="text-sm text-blue-700 space-y-1">
+                            <p><i class="fas fa-calendar w-4"></i> <span x-text="formatSelectedDate()"></span></p>
+                            <p><i class="fas fa-clock w-4"></i> <span x-text="selectedTimeSlot?.time"></span></p>
+                            <p><i class="fas fa-user w-4"></i> <span x-text="selectedTimeSlot?.instructor"></span></p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-blue-900">$<span x-text="selectedClass.price"></span></div>
+                        <div class="text-sm text-blue-700">per session</div>
+                        <div class="text-sm text-green-600 mt-1">
+                            <span x-text="selectedTimeSlot?.spotsLeft"></span> spots remaining
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Package Options -->
+            <div class="mb-6">
+                <h4 class="font-semibold text-gray-800 mb-3">Choose Your Package</h4>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <template x-for="package in packages" :key="package.id">
+                        <div 
+                            @click="selectedPackage = package"
+                            :class="selectedPackage?.id === package.id ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-50'"
+                            class="border border-gray-200 rounded-lg p-4 cursor-pointer transition-all"
+                        >
+                            <div class="text-center">
+                                <h5 class="font-semibold text-gray-800" x-text="package.name"></h5>
+                                <div class="text-2xl font-bold text-blue-600 my-2">$<span x-text="package.totalPrice"></span></div>
+                                <div class="text-sm text-gray-600">
+                                    <span x-text="package.sessions"></span> sessions
+                                    <span x-show="package.discount > 0" class="block text-green-600">
+                                        Save $<span x-text="package.discount"></span>!
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Booking Form -->
+            <form @submit.prevent="proceedToBooking()" class="space-y-4">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" x-model="bookingForm.name" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" x-model="bookingForm.email" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                        <input type="tel" x-model="bookingForm.phone" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                        <select x-model="bookingForm.experience" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select your level</option>
+                            <option value="complete-beginner">Complete Beginner</option>
+                            <option value="some-experience">Some Experience</option>
+                            <option value="comfortable">Comfortable in Water</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Special Requirements or Goals</label>
+                    <textarea x-model="bookingForm.notes" rows="3" 
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="Any medical conditions, specific goals, or special requests..."></textarea>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" x-model="bookingForm.agreeTerms" required id="terms" class="text-blue-600">
+                    <label for="terms" class="text-sm text-gray-600">
+                        I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms & Conditions</a> and 
+                        <a href="#" class="text-blue-600 hover:text-blue-800">Cancellation Policy</a>
+                    </label>
+                </div>
+
+                <div class="border-t pt-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-semibold">Total: $<span x-text="selectedPackage?.totalPrice || selectedClass.price"></span></span>
+                        <div class="text-sm text-gray-600">
+                            <span x-show="selectedPackage" x-text="selectedPackage?.sessions + ' sessions'"></span>
+                            <span x-show="!selectedPackage">Single session</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit"
+                            class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium text-lg">
+                        <i class="fas fa-credit-card mr-2"></i>
+                        Proceed to Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Success Message -->
+        <div x-show="showSuccessMessage" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 translate-y-4"
+             class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-check-circle"></i>
+                <span>Redirecting to secure payment...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-12 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-swimmer text-2xl"></i>
+                        <h4 class="text-xl font-bold">AquaLife</h4>
+                    </div>
+                    <p class="text-blue-200">Professional swimming instruction for all ages and skill levels.</p>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Quick Links</h5>
+                    <ul class="space-y-2 text-blue-200">
+                        <li><a href="classes.html" class="hover:text-white">Classes</a></li>
+                        <li><a href="#" class="hover:text-white">Instructors</a></li>
+                        <li><a href="#" class="hover:text-white">Pricing</a></li>
+                        <li><a href="#" class="hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Contact Info</h5>
+                    <ul class="space-y-2 text-blue-200">
+                        <li><i class="fas fa-phone mr-2"></i>(555) 123-4567</li>
+                        <li><i class="fas fa-envelope mr-2"></i>info@aqualife.com</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>123 Pool St, City</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Follow Us</h5>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-twitter text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
+                <p>&copy; 2025 AquaLife Swimming School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function weeklySchedule() {
+            return {
+                selectedTimeSlot: null,
+                selectedPackage: null,
+                currentWeekStart: new Date(),
+                showSuccessMessage: false,
+                bookingForm: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    experience: '',
+                    notes: '',
+                    agreeTerms: false
+                },
+
+                dayHeaders: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+
+                selectedClass: {
+                    name: 'Adult Beginner Swimming',
+                    description: 'Perfect for adults new to swimming',
+                    duration: '60 minutes',
+                    maxCapacity: 4,
+                    price: 45,
+                    icon: 'fas fa-swimming-pool',
+                    colorClass: 'bg-green-500'
+                },
+
+                packages: [
+                    {
+                        id: 1,
+                        name: 'Single Session',
+                        sessions: 1,
+                        totalPrice: 45,
+                        discount: 0
+                    },
+                    {
+                        id: 2,
+                        name: '4-Session Package',
+                        sessions: 4,
+                        totalPrice: 160,
+                        discount: 20
+                    },
+                    {
+                        id: 3,
+                        name: '8-Session Package',
+                        sessions: 8,
+                        totalPrice: 300,
+                        discount: 60
+                    }
+                ],
+
+                get currentWeekDisplay() {
+                    const endDate = new Date(this.currentWeekStart);
+                    endDate.setDate(endDate.getDate() + 6);
+                    
+                    const startMonth = this.currentWeekStart.toLocaleDateString('en-US', { month: 'short' });
+                    const endMonth = endDate.toLocaleDateString('en-US', { month: 'short' });
+                    const startDay = this.currentWeekStart.getDate();
+                    const endDay = endDate.getDate();
+                    const year = this.currentWeekStart.getFullYear();
+
+                    if (startMonth === endMonth) {
+                        return `${startMonth} ${startDay} - ${endDay}, ${year}`;
+                    } else {
+                        return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${year}`;
+                    }
+                },
+
+                get weekDays() {
+                    const days = [];
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    for (let i = 0; i < 7; i++) {
+                        const date = new Date(this.currentWeekStart);
+                        date.setDate(date.getDate() + i);
+                        
+                        const isPast = date < today;
+                        const isToday = date.getTime() === today.getTime();
+
+                        days.push({
+                            date: date.toISOString().split('T')[0],
+                            day: date.getDate(),
+                            isPast: isPast,
+                            isToday: isToday,
+                            timeSlots: this.getTimeSlotsForDay(i, isPast)
+                        });
+                    }
+                    return days;
+                },
+
+                init() {
+                    // Set current week start to Sunday
+                    const today = new Date();
+                    const dayOfWeek = today.getDay();
+                    this.currentWeekStart = new Date(today);
+                    this.currentWeekStart.setDate(today.getDate() - dayOfWeek);
+                    this.currentWeekStart.setHours(0, 0, 0, 0);
+
+                    // Parse URL parameters for class type
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const classType = urlParams.get('class');
+                    
+                    if (classType) {
+                        this.loadClassData(classType);
+                    }
+
+                    // Select first package by default
+                    this.selectedPackage = this.packages[0];
+                },
+
+                loadClassData(classType) {
+                    const classData = {
+                        'kids-beginner': {
+                            name: 'Kids Beginner Swimming',
+                            description: 'Ages 5-8, water safety and basic skills',
+                            duration: '45 minutes',
+                            maxCapacity: 6,
+                            price: 35,
+                            icon: 'fas fa-child',
+                            colorClass: 'bg-yellow-500'
+                        },
+                        'kids-intermediate': {
+                            name: 'Kids Intermediate Swimming',
+                            description: 'Ages 9-12, stroke development',
+                            duration: '45 minutes',
+                            maxCapacity: 6,
+                            price: 35,
+                            icon: 'fas fa-child',
+                            colorClass: 'bg-orange-500'
+                        },
+                        'adult-beginner': {
+                            name: 'Adult Beginner Swimming',
+                            description: 'Perfect for adults new to swimming',
+                            duration: '60 minutes',
+                            maxCapacity: 4,
+                            price: 45,
+                            icon: 'fas fa-swimming-pool',
+                            colorClass: 'bg-green-500'
+                        },
+                        'intermediate-stroke': {
+                            name: 'Intermediate Stroke Technique',
+                            description: 'Improve technique and learn new strokes',
+                            duration: '75 minutes',
+                            maxCapacity: 5,
+                            price: 55,
+                            icon: 'fas fa-swimmer',
+                            colorClass: 'bg-blue-500'
+                        },
+                        'intermediate-endurance': {
+                            name: 'Intermediate Endurance Training',
+                            description: 'Build stamina and swimming fitness',
+                            duration: '75 minutes',
+                            maxCapacity: 5,
+                            price: 55,
+                            icon: 'fas fa-swimmer',
+                            colorClass: 'bg-indigo-500'
+                        },
+                        'advanced-competitive': {
+                            name: 'Advanced Competitive Training',
+                            description: 'High-level technique and racing skills',
+                            duration: '90 minutes',
+                            maxCapacity: 4,
+                            price: 65,
+                            icon: 'fas fa-trophy',
+                            colorClass: 'bg-purple-500'
+                        },
+                        'advanced-masters': {
+                            name: 'Masters Swimming',
+                            description: 'Structured training for adult swimmers',
+                            duration: '90 minutes',
+                            maxCapacity: 4,
+                            price: 65,
+                            icon: 'fas fa-trophy',
+                            colorClass: 'bg-pink-500'
+                        },
+                        'private-lessons': {
+                            name: 'Private Swimming Lessons',
+                            description: 'One-on-one personalized instruction',
+                            duration: '30-60 minutes',
+                            maxCapacity: 1,
+                            price: 95,
+                            icon: 'fas fa-user-tie',
+                            colorClass: 'bg-gray-600'
+                        }
+                    };
+
+                    if (classData[classType]) {
+                        this.selectedClass = classData[classType];
+                        
+                        // Update packages pricing based on class
+                        this.packages = [
+                            {
+                                id: 1,
+                                name: 'Single Session',
+                                sessions: 1,
+                                totalPrice: this.selectedClass.price,
+                                discount: 0
+                            },
+                            {
+                                id: 2,
+                                name: '4-Session Package',
+                                sessions: 4,
+                                totalPrice: Math.round(this.selectedClass.price * 4 * 0.9),
+                                discount: Math.round(this.selectedClass.price * 4 * 0.1)
+                            },
+                            {
+                                id: 3,
+                                name: '8-Session Package',
+                                sessions: 8,
+                                totalPrice: Math.round(this.selectedClass.price * 8 * 0.8),
+                                discount: Math.round(this.selectedClass.price * 8 * 0.2)
+                            }
+                        ];
+                        
+                        this.selectedPackage = this.packages[0];
+                    }
+                },
+
+                getTimeSlotsForDay(dayIndex, isPast) {
+                    // Mock schedule data - in real app, this would come from backend
+                    const schedules = {
+                        1: [ // Monday
+                            { id: 'm1', time: '9:00 AM', instructor: 'Sarah Johnson', available: true, spotsLeft: 2 },
+                            { id: 'm2', time: '6:00 PM', instructor: 'Mike Chen', available: true, spotsLeft: 1 }
+                        ],
+                        2: [ // Tuesday
+                            { id: 't1', time: '10:00 AM', instructor: 'Emma Rodriguez', available: false, spotsLeft: 0 },
+                            { id: 't2', time: '7:00 PM', instructor: 'Sarah Johnson', available: true, spotsLeft: 3 }
+                        ],
+                        3: [ // Wednesday
+                            { id: 'w1', time: '9:00 AM', instructor: 'Mike Chen', available: true, spotsLeft: 4 },
+                            { id: 'w2', time: '5:30 PM', instructor: 'Emma Rodriguez', available: true, spotsLeft: 2 }
+                        ],
+                        4: [ // Thursday
+                            { id: 'th1', time: '10:00 AM', instructor: 'Sarah Johnson', available: true, spotsLeft: 1 },
+                            { id: 'th2', time: '6:30 PM', instructor: 'Mike Chen', available: true, spotsLeft: 3 }
+                        ],
+                        5: [ // Friday
+                            { id: 'f1', time: '9:30 AM', instructor: 'Emma Rodriguez', available: true, spotsLeft: 2 },
+                            { id: 'f2', time: '5:00 PM', instructor: 'Sarah Johnson', available: false, spotsLeft: 0 }
+                        ],
+                        6: [ // Saturday
+                            { id: 's1', time: '8:00 AM', instructor: 'Mike Chen', available: true, spotsLeft: 4 },
+                            { id: 's2', time: '10:00 AM', instructor: 'Emma Rodriguez', available: true, spotsLeft: 2 },
+                            { id: 's3', time: '2:00 PM', instructor: 'Sarah Johnson', available: true, spotsLeft: 1 }
+                        ]
+                    };
+
+                    return (schedules[dayIndex] || []).map(slot => ({
+                        ...slot,
+                        selected: false
+                    }));
+                },
+
+                changeWeek(direction) {
+                    const newDate = new Date(this.currentWeekStart);
+                    newDate.setDate(newDate.getDate() + (direction * 7));
+                    this.currentWeekStart = newDate;
+                    
+                    // Clear selection when changing weeks
+                    this.selectedTimeSlot = null;
+                },
+
+                selectTimeSlot(slot) {
+                    if (!slot.available || this.isPastSlot(slot)) return;
+                    
+                    // Clear previous selection
+                    this.weekDays.forEach(day => {
+                        day.timeSlots.forEach(s => s.selected = false);
+                    });
+                    
+                    // Select new slot
+                    slot.selected = true;
+                    this.selectedTimeSlot = slot;
+                },
+
+                isPastSlot(slot) {
+                    // In real app, would check if the specific time slot is in the past
+                    return false;
+                },
+
+                formatSelectedDate() {
+                    if (!this.selectedTimeSlot) return '';
+                    
+                    // Find the day this slot belongs to
+                    const day = this.weekDays.find(d => 
+                        d.timeSlots.some(s => s.id === this.selectedTimeSlot.id)
+                    );
+                    
+                    if (day) {
+                        const date = new Date(day.date);
+                        return date.toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                    }
+                    return '';
+                },
+
+                proceedToBooking() {
+                    // In real app, this would integrate with payment gateway
+                    console.log('Booking data:', {
+                        class: this.selectedClass,
+                        timeSlot: this.selectedTimeSlot,
+                        package: this.selectedPackage,
+                        customer: this.bookingForm
+                    });
+                    
+                    this.showSuccessMessage = true;
+                    
+                    // Simulate redirect to payment
+                    setTimeout(() => {
+                        this.showSuccessMessage = false;
+                        // window.location.href = 'payment.html';
+                    }, 2000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

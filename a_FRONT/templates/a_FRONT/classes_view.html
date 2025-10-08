@@ -1,0 +1,298 @@
+{% extends 'layouts/front.html' %} 
+
+{% block content %}
+  
+  <div class="container mx-auto px-4 py-8">
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Swimming Classes</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Choose from our comprehensive range of swimming programs designed for every age and skill level. Each class is led by certified instructors in a safe, supportive environment.</p>
+        </div>
+
+        <!-- Classes Grid -->
+        <div class="grid gap-8">
+            <!-- Kids Swimming -->
+            <div id="kids" class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="md:flex">
+                    <div class="md:w-1/3 bg-gradient-to-br from-yellow-400 to-orange-500 p-8 text-white">
+                        <div class="text-center">
+                            <i class="fas fa-child text-6xl mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-2">Kids Swimming</h3>
+                            <p class="text-yellow-100">Ages 5-12</p>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 p-8">
+                        <div class="mb-6">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-3">Program Overview</h4>
+                            <p class="text-gray-600 mb-4">Our kids' swimming program focuses on water safety, basic swimming skills, and building confidence in the water. Classes are designed to be fun and engaging while teaching essential swimming techniques.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">What's Included:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Water safety fundamentals</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Basic floating techniques</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Beginner stroke development</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Fun water activities & games</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">Class Details:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-clock text-blue-500 mr-2"></i>45 minutes per session</li>
+                                        <li><i class="fas fa-users text-blue-500 mr-2"></i>Maximum 6 kids per class</li>
+                                        <li><i class="fas fa-calendar text-blue-500 mr-2"></i>Weekly sessions</li>
+                                        <li><i class="fas fa-dollar-sign text-blue-500 mr-2"></i>$35 per session</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-3">
+                            <a href="{% url 'weekly_schedule_view' %}?class=kids-beginner" class="bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition-colors font-medium">
+                                <i class="fas fa-calendar-alt mr-2"></i>Kids Beginner Schedule
+                            </a>
+                            <a href="{% url 'weekly_schedule_view' %}?class=kids-intermediate" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors font-medium">
+                                <i class="fas fa-calendar-alt mr-2"></i>Kids Intermediate Schedule
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Beginner Adult -->
+            <div id="beginner" class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="md:flex">
+                    <div class="md:w-1/3 bg-gradient-to-br from-green-400 to-emerald-500 p-8 text-white">
+                        <div class="text-center">
+                            <i class="fas fa-swimming-pool text-6xl mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-2">Beginner Adult</h3>
+                            <p class="text-green-100">Ages 13+</p>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 p-8">
+                        <div class="mb-6">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-3">Program Overview</h4>
+                            <p class="text-gray-600 mb-4">Perfect for adults who are new to swimming or want to overcome their fear of water. Our patient instructors will guide you through the basics in a comfortable, non-judgmental environment.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">What's Included:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Overcoming water anxiety</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Basic breathing techniques</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Floating and treading water</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Basic freestyle stroke</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">Class Details:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-clock text-blue-500 mr-2"></i>60 minutes per session</li>
+                                        <li><i class="fas fa-users text-blue-500 mr-2"></i>Maximum 4 adults per class</li>
+                                        <li><i class="fas fa-calendar text-blue-500 mr-2"></i>Weekly sessions</li>
+                                        <li><i class="fas fa-dollar-sign text-blue-500 mr-2"></i>$45 per session</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-3">
+                            <a href="{% url 'weekly_schedule_view' %}?class=adult-beginner" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-medium">
+                                <i class="fas fa-calendar-alt mr-2"></i>View Weekly Schedule
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intermediate -->
+            <div id="intermediate" class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="md:flex">
+                    <div class="md:w-1/3 bg-gradient-to-br from-blue-400 to-indigo-500 p-8 text-white">
+                        <div class="text-center">
+                            <i class="fas fa-swimmer text-6xl mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-2">Intermediate</h3>
+                            <p class="text-blue-100">All Ages</p>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 p-8">
+                        <div class="mb-6">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-3">Program Overview</h4>
+                            <p class="text-gray-600 mb-4">For swimmers who have mastered the basics and want to improve their technique, endurance, and learn additional strokes. Focus on stroke refinement and building swimming stamina.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">What's Included:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Stroke technique refinement</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Backstroke and breaststroke</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Endurance building</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Flip turns and diving</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">Class Details:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-clock text-blue-500 mr-2"></i>75 minutes per session</li>
+                                        <li><i class="fas fa-users text-blue-500 mr-2"></i>Maximum 5 swimmers per class</li>
+                                        <li><i class="fas fa-calendar text-blue-500 mr-2"></i>Weekly sessions</li>
+                                        <li><i class="fas fa-dollar-sign text-blue-500 mr-2"></i>$55 per session</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-3">
+                            <a href="{% url 'weekly_schedule_view' %}?class=intermediate-stroke" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors font-medium">
+                                <i class="fas fa-calendar-alt mr-2"></i>Stroke Technique Schedule
+                            </a>
+                            <a href="{% url 'weekly_schedule_view' %}?class=intermediate-endurance" class="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition-colors font-medium">
+                                <i class="fas fa-calendar-alt mr-2"></i>Endurance Training Schedule
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced -->
+            <div id="advanced" class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="md:flex">
+                    <div class="md:w-1/3 bg-gradient-to-br from-purple-400 to-pink-500 p-8 text-white">
+                        <div class="text-center">
+                            <i class="fas fa-trophy text-6xl mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-2">Advanced</h3>
+                            <p class="text-purple-100">Competitive Level</p>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 p-8">
+                        <div class="mb-6">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-3">Program Overview</h4>
+                            <p class="text-gray-600 mb-4">High-level training for competitive swimmers or those seeking to master advanced techniques. Includes butterfly stroke, advanced racing starts, and competitive training methods.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">What's Included:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>All four competitive strokes</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Racing starts and turns</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Interval training</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Competition preparation</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">Class Details:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-clock text-blue-500 mr-2"></i>90 minutes per session</li>
+                                        <li><i class="fas fa-users text-blue-500 mr-2"></i>Maximum 4 swimmers per class</li>
+                                        <li><i class="fas fa-calendar text-blue-500 mr-2"></i>2-3 sessions per week</li>
+                                        <li><i class="fas fa-dollar-sign text-blue-500 mr-2"></i>$65 per session</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-3">
+                            <a href="{% url 'weekly_schedule_view' %}?class=advanced-competitive" class="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 transition-colors font-medium">
+                                <i class="fas fa-calendar-alt mr-2"></i>Competitive Training Schedule
+                            </a>
+                            <a href="{% url 'weekly_schedule_view' %}?class=advanced-masters" class="bg-pink-500 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors font-medium">
+                                <i class="fas fa-calendar-alt mr-2"></i>Masters Swimming Schedule
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Private Lessons -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="md:flex">
+                    <div class="md:w-1/3 bg-gradient-to-br from-gray-400 to-slate-500 p-8 text-white">
+                        <div class="text-center">
+                            <i class="fas fa-user-tie text-6xl mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-2">Private Lessons</h3>
+                            <p class="text-gray-100">One-on-One</p>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 p-8">
+                        <div class="mb-6">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-3">Program Overview</h4>
+                            <p class="text-gray-600 mb-4">Personalized instruction tailored to your specific needs and goals. Perfect for those who prefer individual attention or have specific areas they want to focus on.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">What's Included:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Customized lesson plan</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Flexible scheduling</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Rapid skill development</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Goal-specific training</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-700 mb-2">Class Details:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><i class="fas fa-clock text-blue-500 mr-2"></i>30, 45, or 60 minutes</li>
+                                        <li><i class="fas fa-users text-blue-500 mr-2"></i>1-on-1 instruction</li>
+                                        <li><i class="fas fa-calendar text-blue-500 mr-2"></i>Flexible scheduling</li>
+                                        <li><i class="fas fa-dollar-sign text-blue-500 mr-2"></i>$75-$120 per session</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-3">
+                            <a href="{% url 'weekly_schedule_view' %}?class=private-lessons" class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors font-medium">
+                                <i class="fas fa-calendar-alt mr-2"></i>Book Private Lesson
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="bg-blue-600 rounded-xl text-white p-8 mt-12 text-center">
+            <h3 class="text-2xl font-bold mb-4">Ready to Start Your Swimming Journey?</h3>
+            <p class="text-blue-100 mb-6 max-w-2xl mx-auto">Choose the class that's right for you and book your first lesson today. Our expert instructors are ready to help you achieve your swimming goals.</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#" class="bg-white text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors font-medium">
+                    <i class="fas fa-phone mr-2"></i>Call (555) 123-4567
+                </a>
+                <a href="#" class="bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition-colors font-medium">
+                    <i class="fas fa-envelope mr-2"></i>Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {{ highlight_section|json_script:"highlight-section" }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const highlightSectionElement = document.getElementById('highlight-section');
+            const sectionId = highlightSectionElement ? JSON.parse(highlightSectionElement.textContent) : null;
+            
+            if (sectionId) {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                    // Optional: Add highlight effect
+                    section.classList.add('highlight-section');
+                }
+            }
+        });
+    </script>
+
+<style>
+    .highlight-section {
+        animation: highlight 2s ease-in-out;
+    }
+    
+    @keyframes highlight {
+        0% { background-color: rgba(59, 130, 246, 0.1); }
+        50% { background-color: rgba(59, 130, 246, 0.2); }
+        100% { background-color: transparent; }
+    }
+</style>
+
+{% endblock %}

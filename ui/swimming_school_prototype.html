@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaLife Swimming School - Book Classes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-blue-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-swimmer text-3xl"></i>
+                    <h1 class="text-2xl font-bold">AquaLife Swimming School</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="hover:text-blue-200">Classes</a>
+                    <a href="#" class="hover:text-blue-200">Instructors</a>
+                    <a href="#" class="hover:text-blue-200">My Bookings</a>
+                    <a href="#" class="bg-blue-700 px-4 py-2 rounded-lg hover:bg-blue-600">Login</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8" x-data="bookingSystem()">
+        <!-- Page Title & Filter -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Book Swimming Classes</h2>
+            <div class="flex flex-wrap gap-4 items-center">
+                <div class="flex items-center space-x-2">
+                    <label class="text-gray-700 font-medium">Class Type:</label>
+                    <select x-model="selectedClassType" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Classes</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="kids">Kids (5-12)</option>
+                    </select>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <label class="text-gray-700 font-medium">Instructor:</label>
+                    <select x-model="selectedInstructor" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Any Instructor</option>
+                        <option value="sarah">Sarah Johnson</option>
+                        <option value="mike">Mike Chen</option>
+                        <option value="emma">Emma Rodriguez</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Calendar Section -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <!-- Calendar Header -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold text-gray-800">October 2025</h3>
+                        <div class="flex space-x-2">
+                            <button class="p-2 hover:bg-gray-100 rounded-lg">
+                                <i class="fas fa-chevron-left text-gray-600"></i>
+                            </button>
+                            <button class="p-2 hover:bg-gray-100 rounded-lg">
+                                <i class="fas fa-chevron-right text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Grid -->
+                    <div class="grid grid-cols-7 gap-1 mb-4">
+                        <!-- Day Headers -->
+                        <div class="text-center py-2 text-sm font-medium text-gray-500">Sun</div>
+                        <div class="text-center py-2 text-sm font-medium text-gray-500">Mon</div>
+                        <div class="text-center py-2 text-sm font-medium text-gray-500">Tue</div>
+                        <div class="text-center py-2 text-sm font-medium text-gray-500">Wed</div>
+                        <div class="text-center py-2 text-sm font-medium text-gray-500">Thu</div>
+                        <div class="text-center py-2 text-sm font-medium text-gray-500">Fri</div>
+                        <div class="text-center py-2 text-sm font-medium text-gray-500">Sat</div>
+
+                        <!-- Calendar Days -->
+                        <template x-for="day in calendarDays" :key="day.date">
+                            <div 
+                                @click="selectDate(day)"
+                                :class="[
+                                    'relative h-16 border border-gray-200 cursor-pointer transition-colors',
+                                    day.isToday ? 'bg-blue-100 border-blue-300' : '',
+                                    day.isSelected ? 'bg-blue-500 text-white' : 'hover:bg-gray-50',
+                                    day.hasClasses ? 'border-green-300' : ''
+                                ]"
+                                class="flex flex-col justify-between p-1"
+                            >
+                                <span :class="day.isSelected ? 'text-white' : 'text-gray-700'" class="text-sm font-medium" x-text="day.day"></span>
+                                <div class="flex justify-center">
+                                    <div x-show="day.hasClasses" class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="flex items-center space-x-4 text-sm text-gray-600 mt-4">
+                        <div class="flex items-center space-x-1">
+                            <div class="w-3 h-3 bg-blue-500 rounded"></div>
+                            <span>Selected</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <span>Classes Available</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-3 h-3 bg-blue-100 border border-blue-300 rounded"></div>
+                            <span>Today</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Classes Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-lg p-6 sticky top-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                        Available Classes
+                        <span x-show="selectedDate" class="text-base font-normal text-gray-600">
+                            - <span x-text="formatDate(selectedDate)"></span>
+                        </span>
+                    </h3>
+
+                    <div x-show="!selectedDate" class="text-center py-8 text-gray-500">
+                        <i class="fas fa-calendar-alt text-3xl mb-3"></i>
+                        <p>Select a date to view available classes</p>
+                    </div>
+
+                    <div x-show="selectedDate" class="space-y-4">
+                        <!-- Class Card Template -->
+                        <template x-for="classItem in availableClasses" :key="classItem.id">
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-semibold text-gray-800" x-text="classItem.name"></h4>
+                                    <span 
+                                        :class="classItem.spotsLeft > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                                        class="px-2 py-1 rounded-full text-xs font-medium"
+                                        x-text="classItem.spotsLeft > 0 ? classItem.spotsLeft + ' spots left' : 'Full'"
+                                    ></span>
+                                </div>
+                                
+                                <div class="space-y-1 text-sm text-gray-600 mb-3">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-clock w-4"></i>
+                                        <span x-text="classItem.time"></span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-user w-4"></i>
+                                        <span x-text="classItem.instructor"></span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-users w-4"></i>
+                                        <span x-text="classItem.capacity + ' max capacity'"></span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-dollar-sign w-4"></i>
+                                        <span x-text="'$' + classItem.price"></span>
+                                    </div>
+                                </div>
+
+                                <button 
+                                    @click="bookClass(classItem)"
+                                    :disabled="classItem.spotsLeft === 0"
+                                    :class="classItem.spotsLeft > 0 ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+                                    class="w-full py-2 px-4 rounded-lg font-medium transition-colors"
+                                >
+                                    <span x-show="classItem.spotsLeft > 0">Book Now</span>
+                                    <span x-show="classItem.spotsLeft === 0">Fully Booked</span>
+                                </button>
+                            </div>
+                        </template>
+
+                        <div x-show="availableClasses.length === 0" class="text-center py-8 text-gray-500">
+                            <i class="fas fa-calendar-times text-3xl mb-3"></i>
+                            <p>No classes available on this date</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Modal -->
+        <div x-show="showBookingModal" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+             @click.self="showBookingModal = false">
+            
+            <div class="bg-white rounded-xl p-6 m-4 max-w-md w-full max-h-[90vh] overflow-y-auto"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95">
+                
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-gray-800">Confirm Booking</h3>
+                    <button @click="showBookingModal = false" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div x-show="selectedClass" class="space-y-4">
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-blue-900" x-text="selectedClass?.name"></h4>
+                        <div class="text-sm text-blue-700 space-y-1 mt-2">
+                            <p><i class="fas fa-calendar w-4"></i> <span x-text="formatDate(selectedDate)"></span></p>
+                            <p><i class="fas fa-clock w-4"></i> <span x-text="selectedClass?.time"></span></p>
+                            <p><i class="fas fa-user w-4"></i> <span x-text="selectedClass?.instructor"></span></p>
+                            <p><i class="fas fa-dollar-sign w-4"></i> $<span x-text="selectedClass?.price"></span></p>
+                        </div>
+                    </div>
+
+                    <form @submit.prevent="confirmBooking()" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input type="text" x-model="bookingForm.name" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" x-model="bookingForm.email" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input type="tel" x-model="bookingForm.phone" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Special Requirements</label>
+                            <textarea x-model="bookingForm.notes" rows="3" 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      placeholder="Any medical conditions, skill level, or special requests..."></textarea>
+                        </div>
+
+                        <div class="flex space-x-3 pt-4">
+                            <button type="button" @click="showBookingModal = false"
+                                    class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                    class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                Confirm Booking
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div x-show="showSuccessMessage" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 translate-y-4"
+             class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-check-circle"></i>
+                <span>Booking confirmed! Check your email for details.</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function bookingSystem() {
+            return {
+                selectedDate: null,
+                selectedClass: null,
+                selectedClassType: '',
+                selectedInstructor: '',
+                showBookingModal: false,
+                showSuccessMessage: false,
+                bookingForm: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    notes: ''
+                },
+                
+                calendarDays: [
+                    // Sample calendar data for October 2025
+                    {date: '2025-10-01', day: 1, hasClasses: false, isToday: false, isSelected: false},
+                    {date: '2025-10-02', day: 2, hasClasses: true, isToday: false, isSelected: false},
+                    {date: '2025-10-03', day: 3, hasClasses: true, isToday: false, isSelected: false},
+                    {date: '2025-10-04', day: 4, hasClasses: false, isToday: false, isSelected: false},
+                    {date: '2025-10-05', day: 5, hasClasses: true, isToday: false, isSelected: false},
+                    {date: '2025-10-06', day: 6, hasClasses: true, isToday: false, isSelected: false},
+                    {date: '2025-10-07', day: 7, hasClasses: true, isToday: false, isSelected: false},
+                    {date: '2025-10-08', day: 8, hasClasses: true, isToday: true, isSelected: false},
+                    {date: '2025-10-09', day: 9, hasClasses: true, isToday: false, isSelected: false},
+                    {date: '2025-10-10', day: 10, hasClasses: true, isToday: false, isSelected: false},
+                    // Add more days as needed...
+                ],
+
+                availableClasses: [],
+
+                selectDate(day) {
+                    // Reset selection
+                    this.calendarDays.forEach(d => d.isSelected = false);
+                    day.isSelected = true;
+                    this.selectedDate = day.date;
+                    
+                    // Load classes for selected date (mock data)
+                    this.loadClassesForDate(day.date);
+                },
+
+                loadClassesForDate(date) {
+                    // Mock data - in real app, this would be an HTMX call
+                    const mockClasses = [
+                        {
+                            id: 1,
+                            name: 'Beginner Swimming',
+                            time: '9:00 AM - 10:00 AM',
+                            instructor: 'Sarah Johnson',
+                            capacity: 8,
+                            spotsLeft: 3,
+                            price: 45,
+                            type: 'beginner'
+                        },
+                        {
+                            id: 2,
+                            name: 'Kids Swimming (5-12)',
+                            time: '10:30 AM - 11:30 AM',
+                            instructor: 'Emma Rodriguez',
+                            capacity: 6,
+                            spotsLeft: 1,
+                            price: 35,
+                            type: 'kids'
+                        },
+                        {
+                            id: 3,
+                            name: 'Intermediate Stroke Technique',
+                            time: '2:00 PM - 3:00 PM',
+                            instructor: 'Mike Chen',
+                            capacity: 5,
+                            spotsLeft: 0,
+                            price: 55,
+                            type: 'intermediate'
+                        },
+                        {
+                            id: 4,
+                            name: 'Advanced Competitive Training',
+                            time: '6:00 PM - 7:30 PM',
+                            instructor: 'Sarah Johnson',
+                            capacity: 4,
+                            spotsLeft: 2,
+                            price: 65,
+                            type: 'advanced'
+                        }
+                    ];
+
+                    this.availableClasses = mockClasses.filter(cls => {
+                        const typeMatch = !this.selectedClassType || cls.type === this.selectedClassType;
+                        const instructorMatch = !this.selectedInstructor || cls.instructor.toLowerCase().includes(this.selectedInstructor);
+                        return typeMatch && instructorMatch;
+                    });
+                },
+
+                bookClass(classItem) {
+                    this.selectedClass = classItem;
+                    this.showBookingModal = true;
+                },
+
+                confirmBooking() {
+                    // In real app, this would submit via HTMX
+                    console.log('Booking confirmed:', {
+                        class: this.selectedClass,
+                        date: this.selectedDate,
+                        form: this.bookingForm
+                    });
+                    
+                    this.showBookingModal = false;
+                    this.showSuccessMessage = true;
+                    
+                    // Reset form
+                    this.bookingForm = {name: '', email: '', phone: '', notes: ''};
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        this.showSuccessMessage = false;
+                    }, 5000);
+                },
+
+                formatDate(dateString) {
+                    if (!dateString) return '';
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+</html>

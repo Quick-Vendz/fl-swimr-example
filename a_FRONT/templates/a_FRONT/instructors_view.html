@@ -1,0 +1,551 @@
+{% extends 'layouts/front.html' %}
+
+{% block content %}
+  
+  <div class="container mx-auto px-4 py-8" x-data="instructorsPage()">
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Meet Our Expert Instructors</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Our certified swimming instructors bring years of experience and passion for teaching. Each instructor specializes in different areas to provide you with the best possible swimming education.</p>
+        </div>
+
+        <!-- Filter and Search -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex flex-wrap gap-4 items-center">
+                <div class="flex items-center space-x-2">
+                    <label class="text-gray-700 font-medium">Specialty:</label>
+                    <select x-model="selectedSpecialty" @change="filterInstructors()" 
+                            class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">All Specialties</option>
+                        <option value="beginner">Beginner Instruction</option>
+                        <option value="kids">Kids Classes</option>
+                        <option value="competitive">Competitive Training</option>
+                        <option value="rehabilitation">Rehabilitation</option>
+                        <option value="water-safety">Water Safety</option>
+                    </select>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <label class="text-gray-700 font-medium">Availability:</label>
+                    <select x-model="selectedAvailability" @change="filterInstructors()"
+                            class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">All Times</option>
+                        <option value="morning">Morning</option>
+                        <option value="afternoon">Afternoon</option>
+                        <option value="evening">Evening</option>
+                        <option value="weekend">Weekend</option>
+                    </select>
+                </div>
+                
+                <div class="flex-1 max-w-md">
+                    <div class="relative">
+                        <input type="text" x-model="searchQuery" @input="filterInstructors()" 
+                               placeholder="Search by name or expertise..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructors Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            <template x-for="instructor in filteredInstructors" :key="instructor.id">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group">
+                    <!-- Instructor Photo -->
+                    <div class="relative h-64 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                        <div class="w-32 h-32 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-6xl text-white opacity-80"></i>
+                        </div>
+                        <!-- Status Badge -->
+                        <div 
+                            :class="instructor.available ? 'bg-green-500' : 'bg-red-500'"
+                            class="absolute top-4 right-4 px-3 py-1 rounded-full text-white text-sm font-medium"
+                        >
+                            <span x-text="instructor.available ? 'Available' : 'Busy'"></span>
+                        </div>
+                    </div>
+
+                    <!-- Instructor Info -->
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="text-xl font-bold text-gray-800 mb-1" x-text="instructor.name"></h3>
+                            <p class="text-blue-600 font-medium" x-text="instructor.title"></p>
+                        </div>
+
+                        <!-- Certifications -->
+                        <div class="mb-4">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2">Certifications:</h4>
+                            <div class="flex flex-wrap gap-1">
+                                <template x-for="cert in instructor.certifications" :key="cert">
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full" x-text="cert"></span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Specialties -->
+                        <div class="mb-4">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2">Specialties:</h4>
+                            <div class="flex flex-wrap gap-1">
+                                <template x-for="specialty in instructor.specialties" :key="specialty">
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full" x-text="specialty"></span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Experience & Stats -->
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <div class="text-2xl font-bold text-blue-600" x-text="instructor.experience"></div>
+                                <div class="text-xs text-gray-600">Years Experience</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <div class="text-2xl font-bold text-green-600" x-text="instructor.rating"></div>
+                                <div class="text-xs text-gray-600">Rating</div>
+                            </div>
+                        </div>
+
+                        <!-- Languages -->
+                        <div class="mb-4">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2">Languages:</h4>
+                            <p class="text-sm text-gray-600" x-text="instructor.languages.join(', ')"></p>
+                        </div>
+
+                        <!-- Availability -->
+                        <div class="mb-6">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2">Availability:</h4>
+                            <div class="flex flex-wrap gap-1">
+                                <template x-for="time in instructor.availability" :key="time">
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full" x-text="time"></span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-2">
+                            <button @click="viewProfile(instructor)" 
+                                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-user mr-2"></i>View Full Profile
+                            </button>
+                            <button @click="bookWithInstructor(instructor)" 
+                                    :disabled="!instructor.available"
+                                    :class="instructor.available ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'"
+                                    class="w-full text-white py-2 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-calendar-plus mr-2"></i>
+                                <span x-text="instructor.available ? 'Book Lesson' : 'Not Available'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- Empty State -->
+        <div x-show="filteredInstructors.length === 0" class="bg-white rounded-xl shadow-lg p-12 text-center">
+            <div class="bg-gray-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-search text-4xl text-gray-400"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">No instructors found</h3>
+            <p class="text-gray-600 mb-6">No instructors match your current search criteria. Try adjusting your filters.</p>
+            <button @click="clearFilters()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                Clear All Filters
+            </button>
+        </div>
+
+        <!-- Why Choose Our Instructors Section -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mt-12">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Why Choose Our Certified Instructors?</h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-certificate text-2xl text-blue-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">Certified Professionals</h4>
+                    <p class="text-sm text-gray-600">All instructors hold current lifeguard and swimming instructor certifications.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-heart text-2xl text-green-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">Passionate Teachers</h4>
+                    <p class="text-sm text-gray-600">Our instructors are passionate about swimming and dedicated to your success.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-2xl text-yellow-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">Personalized Approach</h4>
+                    <p class="text-sm text-gray-600">Each instructor tailors their teaching method to your individual learning style.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-trophy text-2xl text-purple-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">Proven Results</h4>
+                    <p class="text-sm text-gray-600">Track record of helping students achieve their swimming goals safely and efficiently.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructor Profile Modal -->
+        <div x-show="showProfileModal" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+             @click.self="showProfileModal = false">
+            
+            <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100">
+                
+                <div x-show="selectedInstructor" class="p-6">
+                    <!-- Modal Header -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-800" x-text="selectedInstructor?.name"></h3>
+                        <button @click="showProfileModal = false" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Instructor Photo and Basic Info -->
+                    <div class="flex flex-col md:flex-row gap-6 mb-6">
+                        <div class="md:w-1/3">
+                            <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-4xl text-white opacity-80"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:w-2/3">
+                            <h4 class="text-xl font-semibold text-blue-600 mb-2" x-text="selectedInstructor?.title"></h4>
+                            <p class="text-gray-600 mb-4" x-text="selectedInstructor?.bio"></p>
+                            
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 rounded-lg p-3 text-center">
+                                    <div class="text-xl font-bold text-blue-600" x-text="selectedInstructor?.experience"></div>
+                                    <div class="text-sm text-gray-600">Years Experience</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3 text-center">
+                                    <div class="text-xl font-bold text-green-600" x-text="selectedInstructor?.rating"></div>
+                                    <div class="text-sm text-gray-600">Average Rating</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Information -->
+                    <div class="space-y-6">
+                        <!-- Education & Certifications -->
+                        <div>
+                            <h5 class="font-semibold text-gray-800 mb-3">Education & Certifications</h5>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <ul class="space-y-2">
+                                    <template x-for="cert in selectedInstructor?.detailedCertifications || []" :key="cert">
+                                        <li class="flex items-center space-x-2">
+                                            <i class="fas fa-certificate text-blue-500"></i>
+                                            <span x-text="cert"></span>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Teaching Philosophy -->
+                        <div>
+                            <h5 class="font-semibold text-gray-800 mb-3">Teaching Philosophy</h5>
+                            <div class="bg-blue-50 rounded-lg p-4">
+                                <p class="text-gray-700" x-text="selectedInstructor?.philosophy"></p>
+                            </div>
+                        </div>
+
+                        <!-- Recent Student Reviews -->
+                        <div>
+                            <h5 class="font-semibold text-gray-800 mb-3">Recent Student Reviews</h5>
+                            <div class="space-y-3">
+                                <template x-for="review in selectedInstructor?.reviews || []" :key="review.id">
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-medium text-gray-800" x-text="review.studentName"></span>
+                                            <div class="flex text-yellow-400">
+                                                <template x-for="star in review.rating" :key="star">
+                                                    <i class="fas fa-star text-sm"></i>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-600 text-sm" x-text="review.comment"></p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Weekly Schedule -->
+                        <div>
+                            <h5 class="font-semibold text-gray-800 mb-3">Weekly Schedule</h5>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="grid grid-cols-7 gap-2 text-center">
+                                    <template x-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day">
+                                        <div class="text-xs font-medium text-gray-600" x-text="day"></div>
+                                    </template>
+                                    <template x-for="(schedule, index) in selectedInstructor?.weeklySchedule || []" :key="index">
+                                        <div class="text-xs p-2 rounded" 
+                                             :class="schedule ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                                             x-text="schedule || 'Off'">
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-3 mt-6 pt-6 border-t">
+                        <button @click="bookWithInstructor(selectedInstructor)" 
+                                :disabled="!selectedInstructor?.available"
+                                :class="selectedInstructor?.available ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'"
+                                class="flex-1 text-white py-3 px-6 rounded-lg transition-colors">
+                            <i class="fas fa-calendar-plus mr-2"></i>
+                            <span x-text="selectedInstructor?.available ? 'Book Lesson' : 'Not Available'"></span>
+                        </button>
+                        <button @click="showProfileModal = false"
+                                class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script>
+        function instructorsPage() {
+            return {
+                selectedSpecialty: 'all',
+                selectedAvailability: 'all',
+                searchQuery: '',
+                showProfileModal: false,
+                selectedInstructor: null,
+
+                allInstructors: [
+                    {
+                        id: 1,
+                        name: 'Sarah Johnson',
+                        title: 'Lead Swimming Instructor & Water Safety Expert',
+                        bio: 'Sarah has been teaching swimming for over 8 years and specializes in helping nervous beginners build confidence in the water.',
+                        experience: 8,
+                        rating: 4.9,
+                        available: true,
+                        certifications: ['WSI', 'Lifeguard', 'CPR/AED'],
+                        specialties: ['Beginner Instruction', 'Water Safety', 'Adult Lessons'],
+                        languages: ['English', 'Spanish'],
+                        availability: ['Morning', 'Afternoon'],
+                        philosophy: 'I believe every person can learn to swim with patience, encouragement, and the right technique. My goal is to create a safe, supportive environment where students can overcome their fears and discover the joy of swimming.',
+                        detailedCertifications: [
+                            'Water Safety Instructor (WSI) - American Red Cross',
+                            'Lifeguard Certification - American Red Cross',
+                            'CPR/AED for Professional Rescuers',
+                            'Bachelor of Science in Kinesiology'
+                        ],
+                        reviews: [
+                            { id: 1, studentName: 'Mike R.', rating: 5, comment: 'Sarah helped me overcome my fear of water. Patient and encouraging!' },
+                            { id: 2, studentName: 'Lisa M.', rating: 5, comment: 'Excellent instructor. My kids love her classes!' }
+                        ],
+                        weeklySchedule: ['Off', '9AM-5PM', '9AM-5PM', '9AM-3PM', '9AM-5PM', '8AM-4PM', 'Off']
+                    },
+                    {
+                        id: 2,
+                        name: 'Mike Chen',
+                        title: 'Competitive Swimming Coach',
+                        bio: 'Former competitive swimmer turned coach, Mike specializes in stroke technique and competitive training for all levels.',
+                        experience: 12,
+                        rating: 4.8,
+                        available: true,
+                        certifications: ['ASCA', 'USA Swimming', 'Lifeguard'],
+                        specialties: ['Competitive Training', 'Stroke Technique', 'Advanced Swimming'],
+                        languages: ['English', 'Mandarin'],
+                        availability: ['Afternoon', 'Evening'],
+                        philosophy: 'Excellence in swimming comes from perfecting the fundamentals. I focus on building strong technique and mental resilience to help swimmers reach their full potential.',
+                        detailedCertifications: [
+                            'American Swimming Coaches Association (ASCA) Level 4',
+                            'USA Swimming Certified Coach',
+                            'Lifeguard Certification',
+                            'Masters in Sports Science'
+                        ],
+                        reviews: [
+                            { id: 3, studentName: 'Emma L.', rating: 5, comment: 'Mike helped me improve my technique significantly. Great for competitive training!' },
+                            { id: 4, studentName: 'David K.', rating: 4, comment: 'Very knowledgeable coach. Tough but fair training methods.' }
+                        ],
+                        weeklySchedule: ['Off', '2PM-8PM', '2PM-8PM', '2PM-8PM', '2PM-8PM', '10AM-6PM', '10AM-2PM']
+                    },
+                    {
+                        id: 3,
+                        name: 'Emma Rodriguez',
+                        title: 'Children\'s Swimming Specialist',
+                        bio: 'Emma has a special gift for working with children and has helped hundreds of kids learn to swim safely and confidently.',
+                        experience: 6,
+                        rating: 4.9,
+                        available: true,
+                        certifications: ['WSI', 'Youth Development', 'Lifeguard'],
+                        specialties: ['Kids Classes', 'Water Safety', 'Beginner Instruction'],
+                        languages: ['English', 'Spanish', 'Portuguese'],
+                        availability: ['Morning', 'Afternoon', 'Weekend'],
+                        philosophy: 'Learning to swim should be fun! I use games, songs, and positive reinforcement to help children develop water confidence and essential swimming skills.',
+                        detailedCertifications: [
+                            'Water Safety Instructor (WSI)',
+                            'Youth Development Specialist Certification',
+                            'Lifeguard Certification',
+                            'Bachelor of Education - Physical Education'
+                        ],
+                        reviews: [
+                            { id: 5, studentName: 'Jennifer T.', rating: 5, comment: 'Amazing with kids! My daughter went from scared to swimming laps.' },
+                            { id: 6, studentName: 'Carlos M.', rating: 5, comment: 'Emma makes learning fun. Highly recommend for children.' }
+                        ],
+                        weeklySchedule: ['10AM-2PM', '9AM-3PM', '9AM-3PM', 'Off', '9AM-3PM', '9AM-5PM', '10AM-4PM']
+                    },
+                    {
+                        id: 4,
+                        name: 'Dr. Amanda Foster',
+                        title: 'Aquatic Therapy & Rehabilitation Specialist',
+                        bio: 'Dr. Foster combines her medical background with swimming instruction to help students with disabilities or injuries.',
+                        experience: 10,
+                        rating: 4.7,
+                        available: false,
+                        certifications: ['ATC', 'DPT', 'ATRI'],
+                        specialties: ['Rehabilitation', 'Adaptive Swimming', 'Therapy'],
+                        languages: ['English'],
+                        availability: ['Morning', 'Afternoon'],
+                        philosophy: 'Water is a powerful healing medium. I work with each individual to adapt swimming techniques that accommodate their unique needs and promote recovery.',
+                        detailedCertifications: [
+                            'Doctor of Physical Therapy (DPT)',
+                            'Aquatic Therapy & Rehab Institute Certification',
+                            'Athletic Trainer Certified (ATC)',
+                            'Adaptive Aquatics Instructor'
+                        ],
+                        reviews: [
+                            { id: 7, studentName: 'Robert H.', rating: 5, comment: 'Dr. Foster helped me swim again after my injury. Professional and caring.' },
+                            { id: 8, studentName: 'Maria S.', rating: 4, comment: 'Excellent therapeutic approach. Very knowledgeable about adaptive techniques.' }
+                        ],
+                        weeklySchedule: ['Off', '8AM-2PM', '8AM-2PM', '8AM-2PM', '8AM-2PM', 'Off', 'Off']
+                    },
+                    {
+                        id: 5,
+                        name: 'Jake Thompson',
+                        title: 'Triathlon & Open Water Swimming Coach',
+                        bio: 'Jake is a former triathlete who specializes in open water swimming, endurance training, and triathlon preparation.',
+                        experience: 7,
+                        rating: 4.6,
+                        available: true,
+                        certifications: ['USAT', 'Open Water', 'Lifeguard'],
+                        specialties: ['Open Water', 'Triathlon Training', 'Endurance'],
+                        languages: ['English'],
+                        availability: ['Morning', 'Evening', 'Weekend'],
+                        philosophy: 'Open water swimming requires mental toughness and technical precision. I help athletes build the skills and confidence needed for open water success.',
+                        detailedCertifications: [
+                            'USA Triathlon Certified Coach',
+                            'Open Water Swimming Coach Certification',
+                            'Ironman Certified Coach',
+                            'Bachelor of Science in Exercise Physiology'
+                        ],
+                        reviews: [
+                            { id: 9, studentName: 'Alex P.', rating: 5, comment: 'Jake prepared me perfectly for my first triathlon. Great open water techniques!' },
+                            { id: 10, studentName: 'Sam R.', rating: 4, comment: 'Tough training but excellent results. Highly recommend for serious swimmers.' }
+                        ],
+                        weeklySchedule: ['6AM-10AM', 'Off', '6AM-10AM', '6AM-10AM', '6AM-10AM', '6AM-12PM', '6AM-12PM']
+                    },
+                    {
+                        id: 6,
+                        name: 'Maria Santos',
+                        title: 'Senior Adult Swimming Instructor',
+                        bio: 'Maria specializes in teaching swimming to seniors and adults who are returning to swimming after years away from the pool.',
+                        experience: 9,
+                        rating: 4.8,
+                        available: true,
+                        certifications: ['WSI', 'Senior Fitness', 'Arthritis Foundation'],
+                        specialties: ['Senior Adults', 'Low Impact', 'Rehabilitation'],
+                        languages: ['English', 'Spanish', 'Italian'],
+                        availability: ['Morning', 'Afternoon'],
+                        philosophy: 'It\'s never too late to learn or improve your swimming. I create gentle, supportive programs that respect the unique needs of older adults.',
+                        detailedCertifications: [
+                            'Water Safety Instructor (WSI)',
+                            'Senior Fitness Specialist',
+                            'Arthritis Foundation Aquatic Program',
+                            'Certified Aging Life Care Manager'
+                        ],
+                        reviews: [
+                            { id: 11, studentName: 'Eleanor W.', rating: 5, comment: 'Maria is so patient and understanding. Perfect for seniors!' },
+                            { id: 12, studentName: 'Frank D.', rating: 5, comment: 'Got me back in the pool after 30 years. Excellent instructor.' }
+                        ],
+                        weeklySchedule: ['Off', '9AM-1PM', '9AM-1PM', '9AM-1PM', '9AM-1PM', '9AM-1PM', 'Off']
+                    }
+                ],
+
+                get filteredInstructors() {
+                    let filtered = this.allInstructors;
+
+                    // Filter by specialty
+                    if (this.selectedSpecialty !== 'all') {
+                        filtered = filtered.filter(instructor => 
+                            instructor.specialties.some(specialty => 
+                                specialty.toLowerCase().includes(this.selectedSpecialty.toLowerCase().replace('-', ' '))
+                            )
+                        );
+                    }
+
+                    // Filter by availability
+                    if (this.selectedAvailability !== 'all') {
+                        filtered = filtered.filter(instructor => 
+                            instructor.availability.some(time => 
+                                time.toLowerCase().includes(this.selectedAvailability.toLowerCase())
+                            )
+                        );
+                    }
+
+                    // Filter by search query
+                    if (this.searchQuery) {
+                        const query = this.searchQuery.toLowerCase();
+                        filtered = filtered.filter(instructor => 
+                            instructor.name.toLowerCase().includes(query) ||
+                            instructor.title.toLowerCase().includes(query) ||
+                            instructor.specialties.some(s => s.toLowerCase().includes(query)) ||
+                            instructor.bio.toLowerCase().includes(query)
+                        );
+                    }
+
+                    return filtered;
+                },
+
+                filterInstructors() {
+                    // This method is called when filters change
+                    // The computed property handles the actual filtering
+                },
+
+                clearFilters() {
+                    this.selectedSpecialty = 'all';
+                    this.selectedAvailability = 'all';
+                    this.searchQuery = '';
+                },
+
+                viewProfile(instructor) {
+                    this.selectedInstructor = instructor;
+                    this.showProfileModal = true;
+                },
+
+                bookWithInstructor(instructor) {
+                    if (!instructor.available) {
+                        alert('This instructor is currently not available for new bookings.');
+                        return;
+                    }
+                    
+                    // In real app, this would redirect to booking page with instructor pre-selected
+                    alert(`Booking a lesson with ${instructor.name}. Redirecting to class selection...`);
+                    // window.location.href = `classes.html?instructor=${instructor.id}`;
+                }
+            }
+        }
+    </script>
+
+{% endblock %}
