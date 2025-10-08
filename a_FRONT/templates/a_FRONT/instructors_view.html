@@ -48,8 +48,16 @@
             </div>
         </div>
 
+        <!-- Loading State -->
+        <div x-show="isLoading" class="flex justify-center items-center py-16">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p class="text-gray-600">Loading instructors...</p>
+            </div>
+        </div>
+
         <!-- Instructors Grid -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div x-show="!isLoading" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             <template x-for="instructor in filteredInstructors" :key="instructor.id">
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group">
                     <!-- Instructor Photo -->
@@ -330,6 +338,7 @@
                 searchQuery: '',
                 showProfileModal: false,
                 selectedInstructor: null,
+                isLoading: true, // Add loading state
 
                 allInstructors: [
                     {
@@ -485,6 +494,8 @@
                 ],
 
                 get filteredInstructors() {
+                    if (this.isLoading) return []; // Return empty array while loading
+                    
                     let filtered = this.allInstructors;
 
                     // Filter by specialty
@@ -528,6 +539,13 @@
                     this.selectedSpecialty = 'all';
                     this.selectedAvailability = 'all';
                     this.searchQuery = '';
+                },
+
+                init() {
+                    // Simulate data loading (in real app, this would be an API call)
+                    this.$nextTick(() => {
+                        this.isLoading = false;
+                    });
                 },
 
                 viewProfile(instructor) {

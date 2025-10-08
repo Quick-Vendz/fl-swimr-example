@@ -82,6 +82,16 @@
 
         <!-- Bookings List -->
         <div class="space-y-6">
+            <!-- Loading State -->
+            <div x-show="isLoading" class="flex justify-center items-center py-16">
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p class="text-gray-600">Loading your bookings...</p>
+                </div>
+            </div>
+
+            <!-- Bookings Content -->
+            <div x-show="!isLoading">
             <!-- Upcoming Lessons Section -->
             <div x-show="filteredBookings.some(b => b.status === 'upcoming')" class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div class="bg-blue-600 text-white px-6 py-4">
@@ -284,6 +294,7 @@
                     <span>Book Your First Lesson</span>
                 </a>
             </div>
+            </div>
         </div>
 
         <!-- Modals -->
@@ -355,6 +366,7 @@
                 selectedBookingForRating: null,
                 rating: 0,
                 ratingComment: '',
+                isLoading: true, // Add loading state
 
                 stats: {
                     upcoming: 3,
@@ -448,6 +460,8 @@
                 ],
 
                 get filteredBookings() {
+                    if (this.isLoading) return []; // Return empty array while loading
+                    
                     let filtered = this.allBookings;
 
                     // Filter by status
@@ -496,6 +510,13 @@
                 filterBookings() {
                     // This method is called when filters change
                     // The computed property `filteredBookings` handles the actual filtering
+                },
+
+                init() {
+                    // Simulate data loading (in real app, this would be an API call)
+                    this.$nextTick(() => {
+                        this.isLoading = false;
+                    });
                 },
 
                 formatDate(dateString) {
